@@ -13,7 +13,7 @@
 #
 define rclone::config (
   String               $group,
-  Hash[String, String] $conf,
+  Hash[String, Variant[String, Sensitive[String]]] $conf,
 ) {
   if $conf[rclone_conf] == 'S3_AWS' {
     file {
