@@ -26,8 +26,9 @@ Also at the moment only for Debian/Ubuntu
 
 ### What rclone affects
 
+It ensures unzip is present
 It adds services triggered by systemd timers
-It ensures mailutils is availabel to send notifications
+It ensures mailutils is available to send notifications
 A slack service notification system is commented out
 
 ### Setup Requirements
