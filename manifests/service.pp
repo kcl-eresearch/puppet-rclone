@@ -55,16 +55,16 @@
 #
 #
 define rclone::service (
-  String                       $command,
-  String                       $src,
-  String                       $dst,
-  String                       $user,
-  String                       $group,
-  String                       $run_on,
-  String                       $email,
-  Boolean                      $active   = true,
-  Optional[String]             $opts     = undef,
-  Optional[Hash[String, Type]] $conf     = undef,
+  String                         $command,
+  String                         $src,
+  String                         $dst,
+  String                         $user,
+  String                         $group,
+  String                         $run_on,
+  String                         $email,
+  Boolean                        $active   = true,
+  Optional[String]               $opts     = undef,
+  Optional[Hash[String, String]] $conf     = undef,
 ) {
   if !$active {
     tidy {
