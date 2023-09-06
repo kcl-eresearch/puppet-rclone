@@ -83,9 +83,9 @@ define rclone::service (
   }
 
   if $active {
-    if $opts == undef {
-      $opts = ''
-    }
+    # if $opts == undef {
+    #   $opts = ''
+    # }
     if $conf != undef {
       $rclone_opts = "${opts} --config=/etc/rclone/${name}_rclone.conf"
       rclone::config { $name:
