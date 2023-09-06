@@ -145,7 +145,6 @@ define rclone::service (
             'rclone_group'       => $group,
             'rclone_msg'         => "${name}-backup",
             'email_notification' => $email,
-            'admin_email'        => $rclone::service::admin_email,
         });
 
       "/var/log/rclone-backups/${name}-backup.log":

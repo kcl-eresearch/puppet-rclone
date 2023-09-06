@@ -6,7 +6,6 @@
       String $rclone_group,
       String $rclone_msg,
       String $email_notification,
-      String $admin_email,
 | -%>
 # Puppet managed file
 [Unit]
@@ -25,6 +24,6 @@ ExecStartPre=%s -c 'echo date=$(/bin/date +%%Y-%%m-%%d) > /tmp/systemd_<%= $rclo
 EnvironmentFile=-/tmp/systemd_<%= $rclone_user %>_rclone.env
 ExecStart=/usr/bin/rclone <%= $rclone %> <%= $rclone_opts %> <%= $rclone_src %> <%= $rclone_dst %> --log-file /var/log/rclone-backups/<%= $rclone_msg %>.log --stats=0 --stats-one-line -v
 <% if $email_notification != '' { -%>
-ExecStartPost=+/bin/bash -c "/usr/bin/echo '<%= $rclone_msg %> completed' | /usr/bin/mailx -s '<%= $rclone_msg %> completed' -a '/var/log/rclone-backups/<%= $rclone_msg %>.log' <%= $admin_email %>,<%= $email_notification %>"
+ExecStartPost=+/bin/bash -c "/usr/bin/echo '<%= $rclone_msg %> completed' | /usr/bin/mailx -s '<%= $rclone_msg %> completed' -a '/var/log/rclone-backups/<%= $rclone_msg %>.log' <%= $email_notification %>"
 <% } -%>
 # ExecStartPost=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= $rclone_msg %> completed'
