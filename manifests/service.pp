@@ -95,6 +95,14 @@ define rclone::service (
         conf  => $conf,
       }
     }
+    else {
+      if $opts == undef {
+        $rclone_opts = ''
+      }
+      else {
+        $rclone_opts = $opts
+      }
+    }
     file {
       "/lib/systemd/system/${name}-backup.timer":
         ensure  => 'file',
