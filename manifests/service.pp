@@ -82,30 +82,6 @@ define rclone::service (
     }
   }
 
-  file {
-    '/etc/rclone':
-      ensure  => 'directory',
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0754',
-      require => Class[rclone];
-
-    '/var/log/rclone-backups':
-      ensure => 'directory',
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0754';
-
-    # This can be uncommented to notify a slack service
-    # also nbeed to uncomment lines in the template rclone-backup.service.epp
-    # '/lib/systemd/system/alert-slack@.service':
-    #   ensure  => 'file',
-    #   owner   => 'root',
-    #   group   => 'root',
-    #   mode    => '0444',
-    #   content => file('modules/rclone/alert-slack@.service');
-  }
-
   if $active {
     if $rclone_opts == undef {
       $rclone_opts = ''
