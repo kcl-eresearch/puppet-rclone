@@ -83,11 +83,11 @@ define rclone::service (
   }
 
   if $active {
-    if $rclone_opts == undef {
+    if $opts == undef {
       $rclone_opts = ''
     }
     else {
-      $rclone_opts = $rclone_opts
+      $rclone_opts = $opts
     }
     if $conf != undef {
       rclone::config { $name:
