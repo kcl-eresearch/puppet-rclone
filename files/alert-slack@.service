@@ -1,0 +1,7 @@
+# Puppet managed file - any systemd can hit this on failure
+[Unit]
+Description=Send Slack msg
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/slack_msg --channel alerts --icon broken_robot --message '%i failed'

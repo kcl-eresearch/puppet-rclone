@@ -1,0 +1,13 @@
+<%- | String $svc_name,
+      String $run_on_cal,
+| -%>
+# Puppet managed file for rclone backup automation
+[Unit]
+Description="Automatically run <%= $svc_name %> backups on <%= $run_on_cal %>"
+
+[Timer]
+OnCalendar=<%= $run_on_cal %>
+Persistent=true
+
+[Install]
+WantedBy=timers.target

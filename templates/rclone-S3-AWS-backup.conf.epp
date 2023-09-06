@@ -1,0 +1,14 @@
+<%- | String $config_name,
+      Sensitive $access_key,
+      Sensitive $secret_key,
+      String $aws_region,
+      String $aws_location,
+| -%>
+# Puppet managed file - additional configs need to be added in modules>create>templates>hpc>control>rclone-backup.conf.epp
+[<%= $config_name %>]
+type = s3
+provider = AWS
+access_key_id = <%= $access_key %>
+secret_access_key = <%= $secret_key %>
+region = <%= $aws_region %>
+location_constraint = <%= $aws_location %>
