@@ -95,5 +95,5 @@ class rclone::install {
     #   content => file('modules/rclone/alert-slack@.service');
   }
 
-  ensure_packages(['mailutils'])
+  ensure_packages(['mailutils', 'unzip'])
 }
