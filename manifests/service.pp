@@ -140,9 +140,6 @@ define rclone::service (
         create_group => $group,
         create_mode  => '0664',
     }
-
-    if $conf != undef {
-    }
   }
 
   if $active {
