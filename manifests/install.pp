@@ -74,11 +74,10 @@ class rclone::install {
 
   file {
     '/etc/rclone':
-      ensure  => 'directory',
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0754',
-      require => Class[rclone];
+      ensure => 'directory',
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0754';
 
     '/var/log/rclone-backups':
       ensure => 'directory',
