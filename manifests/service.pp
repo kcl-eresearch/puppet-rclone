@@ -90,11 +90,11 @@ define rclone::service (
       $rclone_opts = $opts
     }
     if $conf != undef {
+      $rclone_opts = "${rclone_opts} --config=/etc/rclone/${name}_rclone.conf"
       rclone::config { $name:
         group => $group,
         conf  => $conf,
       }
-      $rclone_opts = "${rclone_opts} --config=/etc/rclone/${name}_rclone.conf"
     }
     file {
       "/lib/systemd/system/${name}-backup.timer":
