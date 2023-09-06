@@ -22,7 +22,7 @@ define rclone::config (
         owner   => 'root',
         group   => $group,
         mode    => '0440',
-        content => epp('modules/rclone/rclone-S3-AWS-backup.conf.epp', {
+        content => epp("${module_name}/rclone-S3-AWS-backup.conf.epp", {
             'config_name'  => $name,
             'access_key'   => $conf[access_key],
             'secret_key'   => $conf[secret_key],

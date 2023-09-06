@@ -126,7 +126,7 @@ define rclone::service (
         owner   => 'root',
         group   => 'root',
         mode    => '0444',
-        content => epp('modules/rclone/rclone-backup.timer.epp', {
+        content => epp("${module_name}/rclone-backup.timer.epp", {
             'svc_name'   => $name,
             'run_on_cal' => $run_on,
         });
@@ -136,7 +136,7 @@ define rclone::service (
         owner   => 'root',
         group   => 'root',
         mode    => '0444',
-        content => epp('modules/rclone/rclone-backup.service.epp', {
+        content => epp("${module_name}/rclone-backup.service.epp", {
             'rclone'             => $command,
             'rclone_opts'        => $rclone_opts,
             'rclone_src'         => $src,
