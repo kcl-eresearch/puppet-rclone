@@ -64,7 +64,7 @@ define rclone::service (
   String                         $email,
   Boolean                        $active   = true,
   Optional[String]               $opts     = undef,
-  Optional[Hash[String, String]] $conf     = undef,
+  Optional[Hash[String, Variant[String, Sensitive[String]]]] $conf     = undef,
 ) {
   if !$active {
     tidy {
