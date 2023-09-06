@@ -1,10 +1,7 @@
 # rclone
 
-Welcome to your new module. A short overview of the generated parts can be found
-in the [PDK documentation][1].
-
-The README template below provides a starting point with details about what
-information to include in your README.
+configures different backups (sources and destinations) using
+local file systems or S3_AWS, looking to add other backends as required.
 
 ## Table of Contents
 
