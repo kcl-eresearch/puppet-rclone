@@ -16,7 +16,7 @@ ExecStartPre=<%= pre_exec %>
 <% end -%>
 EnvironmentFile=-/tmp/systemd_<%= @user %>_rclone.env
 ExecStart=/usr/bin/rclone <%= @command %> <%= @rclone_opts %> <%= @src %> <%= @dst %> --log-file /var/log/rclone-backups/<%= @name %>-backup.log --stats=0 --stats-one-line -v
-ExecStartPost=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup completed' | /usr/bin/mailx -s '<%= @name %>-backup completed' -a '/var/log/rclone-backups/<%= @name %>-backup.log' <%= @email %>"
+ExecStartPost=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup completed' | /usr/bin/mailx -s '<%= @name %>-backup completed' -A '/var/log/rclone-backups/<%= @name %>-backup.log' <%= @email %>"
 <% if @post_rclone != nil -%>
 <% @post_rclone.each do |post_exec| -%>
 ExecStartPost=<%= post_exec %>
