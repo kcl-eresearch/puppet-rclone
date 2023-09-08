@@ -13,7 +13,7 @@
 #
 class rclone (
   Pattern[/absent/, /latest/, /\d+\.\d+\.\d+/] $ensure  = 'latest',
-  Optional[Hash]                               $backups = {},
+  Optional[Hash]                               $backups = undef,
 ) {
   $install_dir = '/opt/rclone'
   $binary = '/usr/bin/rclone'
@@ -30,9 +30,11 @@ class rclone (
     refreshonly => true,
   }
 
-  $backups.each |$name, $config| {
-    rclone::service { $name:
-      * => $config,
+  if $ensure != 'absent' and $backups != undef {
+    $backups.each |$name, $config| {
+      rclone::service { $name:
+        * => $config,
+      }
     }
   }
 }
