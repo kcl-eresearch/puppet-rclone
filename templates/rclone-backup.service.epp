@@ -9,14 +9,14 @@
 | -%>
 # Puppet managed file
 [Unit]
-# OnFailure=alert-slack@%N.service
+OnFailure=alert-slack@%N.service
 OnFailure=+/bin/bash -c "/usr/bin/echo '<%= $rclone_msg %> started' | /usr/bin/mailx -s '<%= $rclone_msg %> failed' <%= $admin_email %>,<%= $email_notification %>"
 
 [Service]
 Type=oneshot
 User=<%= $rclone_user %>
 Group=<%= $rclone_group %>
-# ExecStartPre=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= $rclone_msg %> started'
+ExecStartPre=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= $rclone_msg %> started'
 <% if $email_notification != '' { -%>
 ExecStartPre=+/bin/bash -c "/usr/bin/echo '<%= $rclone_msg %> started' | /usr/bin/mailx -s '<%= $rclone_msg %> started' <%= $admin_email %>,<%= $email_notification %>"
 <% } -%>
@@ -26,4 +26,4 @@ ExecStart=/usr/bin/rclone <%= $rclone %> <%= $rclone_opts %> <%= $rclone_src %> 
 <% if $email_notification != '' { -%>
 ExecStartPost=+/bin/bash -c "/usr/bin/echo '<%= $rclone_msg %> completed' | /usr/bin/mailx -s '<%= $rclone_msg %> completed' -a '/var/log/rclone-backups/<%= $rclone_msg %>.log' <%= $email_notification %>"
 <% } -%>
-# ExecStartPost=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= $rclone_msg %> completed'
+ExecStartPost=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= $rclone_msg %> completed'

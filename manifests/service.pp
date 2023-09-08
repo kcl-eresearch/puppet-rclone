@@ -53,6 +53,11 @@
 #      aws_region: 
 #      aws_location:
 #
+# @param pre_rclone
+#   any ExecStartPre that may be desired to run before rclone runs
+#
+# @param post_rclone
+#   any ExecStartPost that may be desired to run after rclone runs
 #
 define rclone::service (
   String                         $command,
@@ -65,6 +70,8 @@ define rclone::service (
   Boolean                        $active   = true,
   Optional[String]               $opts     = undef,
   Optional[Hash[String, Variant[String, Sensitive[String]]]] $conf     = undef,
+  Optional[Array[String]] $pre_rclone      = undef,
+  Optional[Array[String]] $post_rclone     = undef,
 ) {
   if !$active {
     tidy {
@@ -119,8 +126,8 @@ define rclone::service (
         owner   => 'root',
         group   => 'root',
         mode    => '0444',
-        content => epp("${module_name}/rclone-backup.service.epp", {
-            'rclone'             => $command,
+        content => template("${module_name}/rclone-backup.service.erb", {
+            'command'            => $command,
             'rclone_opts'        => $rclone_opts,
             'rclone_src'         => $src,
             'rclone_dst'         => $dst,
@@ -128,6 +135,8 @@ define rclone::service (
             'rclone_group'       => $group,
             'rclone_msg'         => "${name}-backup",
             'email_notification' => $email,
+            'pre_rclone'         => $pre_rclone,
+            'post_rclone'        => $post_rclone,
         });
 
       "/var/log/rclone-backups/${name}-backup.log":

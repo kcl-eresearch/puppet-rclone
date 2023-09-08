@@ -26,7 +26,7 @@ Also at the moment only for Debian/Ubuntu
 It ensures unzip is present
 It adds services triggered by systemd timers
 It ensures mailutils is available to send notifications
-A slack service notification system is commented out
+It installs an alert-slack@.service tha tis notified on failure, start and completion of backups
 
 ### Setup Requirements
 

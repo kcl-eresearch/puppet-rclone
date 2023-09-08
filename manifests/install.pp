@@ -85,14 +85,12 @@ class rclone::install {
       group  => 'root',
       mode   => '0754';
 
-    # This can be uncommented to notify a slack service
-    # also nbeed to uncomment lines in the template rclone-backup.service.epp
-    # '/lib/systemd/system/alert-slack@.service':
-    #   ensure  => 'file',
-    #   owner   => 'root',
-    #   group   => 'root',
-    #   mode    => '0444',
-    #   content => file('modules/rclone/alert-slack@.service');
+    '/lib/systemd/system/alert-slack@.service':
+      ensure  => 'file',
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0444',
+      content => file("${module_name}/alert-slack@.service");
   }
 
   ensure_packages(['mailutils', 'unzip'])
