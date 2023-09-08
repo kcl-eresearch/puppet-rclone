@@ -5,12 +5,6 @@
 #  - create a timer to run the service at the time specified
 #  - organise a log for each backup and rotate them weekly
 #  - add a config file for a named backup to an S3_AWS bucket
-#  - example for how to notify a slack service is included but commented out
-#
-# TODO: add do_before and do_after 
-#   want to be able to run user defined commands or scripts before and after 
-#   the systemd service does the rclone run
-#   (add conditional ExecStartPre and ExecStartPost lines to rclone-backup.service.epp)
 #
 #
 # @param command

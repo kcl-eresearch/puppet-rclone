@@ -25,6 +25,8 @@
 #       email   => 'user@foo.com',
 #       # enable or disable this backup
 #       active  => true,
+#       # array of tasks to run before rclone backup runs (post_rclone will add tasks after the backup)
+#       pre_rclone => ["%s -c 'echo date=$(/bin/date +%%Y-%%m-%%d) > /tmp/systemd_local_dirs_example_rclone.env'"],
 #     },
 #     otherproject => {
 #       command => 'sync',
@@ -52,14 +54,15 @@ class { 'rclone':
   ensure  => '1.63.1',
   backups => {
     'local_dirs_example' => {
-      command => 'sync',
-      src     => '/some/source/location/',
-      dst     => '/some/destination/location/',
-      user    => 'someLocalUser',
-      group   => 'someLocalGroup',
-      run_on  => 'Fri',
-      email   => 'someone.who.should.know@example.com',
-      active  => true,
+      command    => 'sync',
+      src        => '/some/source/location/',
+      dst        => '/some/destination/location/',
+      user       => 'someLocalUser',
+      group      => 'someLocalGroup',
+      run_on     => 'Fri',
+      email      => 'someone.who.should.know@example.com',
+      active     => true,
+      pre_rclone => ["%s -c 'echo date=$(/bin/date +%%Y-%%m-%%d) > /tmp/systemd_local_dirs_example_rclone.env'"],
     },
     'amzn_S3_example'    => {
       command => 'sync',
