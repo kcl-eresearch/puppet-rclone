@@ -1,25 +1,25 @@
 # Puppet managed file
 [Unit]
 OnFailure=alert-slack@%N.service
-OnFailure=+/bin/bash -c "/usr/bin/echo '<%= @rclone_msg %> started' | /usr/bin/mailx -s '<%= @rclone_msg %> failed' <%= @email_notification %>"
+OnFailure=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup started' | /usr/bin/mailx -s '<%= @name %>-backup failed' <%= @email_notification %>"
 
 [Service]
 Type=oneshot
-User=<%= @rclone_user %>
-Group=<%= @rclone_group %>
-ExecStartPre=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= @rclone_msg %> started'
-ExecStartPre=+/bin/bash -c "/usr/bin/echo '<%= @rclone_msg %> started' | /usr/bin/mailx -s '<%= @rclone_msg %> started' <%= @email_notification %>"
+User=<%= @user %>
+Group=<%= @group %>
+ExecStartPre=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= @name %>-backup started'
+ExecStartPre=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup started' | /usr/bin/mailx -s '<%= @name %>-backup started' <%= @email_notification %>"
 <% if @pre_rclone != nil -%>
 <% @pre_rclone.each do |pre_exec| -%>
 ExecStartPre=<%= pre_exec %>
 <% end -%>
 <% end -%>
-EnvironmentFile=-/tmp/systemd_<%= @rclone_user %>_rclone.env
-ExecStart=/usr/bin/rclone <%= @command %> <%= @rclone_opts %> <%= @rclone_src %> <%= @rclone_dst %> --log-file /var/log/rclone-backups/<%= @rclone_msg %>.log --stats=0 --stats-one-line -v
-ExecStartPost=+/bin/bash -c "/usr/bin/echo '<%= @rclone_msg %> completed' | /usr/bin/mailx -s '<%= @rclone_msg %> completed' -a '/var/log/rclone-backups/<%= @rclone_msg %>.log' <%= $email_notification %>"
+EnvironmentFile=-/tmp/systemd_<%= @user %>_rclone.env
+ExecStart=/usr/bin/rclone <%= @command %> <%= @rclone_opts %> <%= @src %> <%= @dst %> --log-file /var/log/rclone-backups/<%= @name %>-backup.log --stats=0 --stats-one-line -v
+ExecStartPost=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup completed' | /usr/bin/mailx -s '<%= @name %>-backup completed' -a '/var/log/rclone-backups/<%= @name %>-backup.log' <%= @email_notification %>"
 <% if @post_rclone != nil -%>
 <% @post_rclone.each do |post_exec| -%>
 ExecStartPost=<%= post_exec %>
 <% end -%>
 <% end -%>
-ExecStartPost=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= @rclone_msg %> completed'
+ExecStartPost=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= @name %>-backup completed'

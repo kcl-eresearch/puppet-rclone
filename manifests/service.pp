@@ -126,18 +126,7 @@ define rclone::service (
         owner   => 'root',
         group   => 'root',
         mode    => '0444',
-        content => template("${module_name}/rclone-backup.service.erb", {
-            'command'            => $command,
-            'rclone_opts'        => $rclone_opts,
-            'rclone_src'         => $src,
-            'rclone_dst'         => $dst,
-            'rclone_user'        => $user,
-            'rclone_group'       => $group,
-            'rclone_msg'         => "${name}-backup",
-            'email_notification' => $email,
-            'pre_rclone'         => $pre_rclone,
-            'post_rclone'        => $post_rclone,
-        });
+        content => template("${module_name}/rclone-backup.service.erb");
 
       "/var/log/rclone-backups/${name}-backup.log":
         ensure => 'present',
