@@ -84,13 +84,6 @@ class rclone::install {
       owner  => 'root',
       group  => 'root',
       mode   => '0754';
-
-    '/lib/systemd/system/alert-slack@.service':
-      ensure  => 'file',
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0444',
-      content => file("${module_name}/alert-slack@.service");
   }
 
   ensure_packages(['mailutils', 'unzip'])

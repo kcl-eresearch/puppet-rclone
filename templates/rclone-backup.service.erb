@@ -1,13 +1,11 @@
 # Puppet managed file
 [Unit]
-OnFailure=alert-slack@%N.service
-OnFailure=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup started' | /usr/bin/mailx -s '<%= @name %>-backup failed' <%= @email %>"
+OnFailure=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup failed' | /usr/bin/mailx -s '<%= @name %>-backup failed' <%= @email %>"
 
 [Service]
 Type=oneshot
 User=<%= @user %>
 Group=<%= @group %>
-ExecStartPre=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= @name %>-backup started'
 ExecStartPre=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup started' | /usr/bin/mailx -s '<%= @name %>-backup started' <%= @email %>"
 <% if @pre_rclone != nil -%>
 <% @pre_rclone.each do |pre_exec| -%>
@@ -22,4 +20,3 @@ ExecStartPost=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup completed' | /us
 ExecStartPost=<%= post_exec %>
 <% end -%>
 <% end -%>
-ExecStartPost=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= @name %>-backup completed'

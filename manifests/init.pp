@@ -12,8 +12,8 @@
 #   define backups to be made using rclone
 #
 class rclone (
-  Pattern[/absent/, /latest/, /\d+\.\d+\.\d+/] $ensure  = 'latest',
-  Optional[Hash]                               $backups = undef,
+  Pattern[/absent/, /latest/, /\d+\.\d+\.\d+/] $ensure = 'latest',
+  Optional[Hash]                              $backups = undef,
 ) {
   $install_dir = '/opt/rclone'
   $binary = '/usr/bin/rclone'

@@ -26,7 +26,7 @@ Also at the moment only for Debian/Ubuntu
 It ensures unzip is present
 It adds services triggered by systemd timers
 It ensures mailutils is available to send notifications
-It installs an alert-slack@.service tha tis notified on failure, start and completion of backups
+This version sets up a systemd one shot service and timer to trigger the service to run the backup on a required schedule.
 
 ### Setup Requirements
 
@@ -39,6 +39,7 @@ systemd is used
 class { 'rclone':
   # like to use a specific version
   ensure  => '1.63.1'
+  # how to set up a basic backup called "project"
   project => {
     # the basic rclone command like 'sync' or 'copy'
     command => 'sync',
@@ -57,7 +58,7 @@ class { 'rclone':
     group   => 'group',
     # when should the systemd run this, can also use the systemd timer style *-*-15 01:00:00 (0100 on the 15th of each month)
     run_on  => 'Fri',
-    # who should be sent an email NB there is an rclone::service::admin_email too
+    # who should be sent an email NB there is an rclone::service::admin_email that can be used too
     email   => 'user@foo.com',
     # enable or disable this backup
     active  => true,
@@ -93,7 +94,7 @@ There probably are some, early days atm
 
 ## Development
 
-Early days atm!!
+Looking to add more config templates and descriptions in config.pp to handle different backends.
 
 ## Release Notes/Contributors/Etc.
 
