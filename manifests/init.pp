@@ -15,7 +15,7 @@
 #   define backups to be made using rclone
 #
 class rclone (
-  Pattern[/absent/, /latest/, /\d+\.\d+\.\d+/] $ensure  = 'latest',
+  Pattern[/absent/, /latest/, /present/, /\d+\.\d+\.\d+/] $ensure  = 'latest',
   Boolean                                      $use_pkg = false,
   Optional[Hash]                               $backups = undef,
 ) {
