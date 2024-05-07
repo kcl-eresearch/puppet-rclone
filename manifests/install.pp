@@ -5,10 +5,7 @@
 #
 class rclone::install {
   if $rclone::use_pkg {
-    package {
-      'rclone':
-        ensure => $rclone::ensure;
-    }
+    ensure_packages(['rclone'])
   } else {
     $_os = $facts['os']['family'] ? {
       /(Debian|Ubuntu)/ => 'linux',
