@@ -70,6 +70,7 @@ define rclone::service (
   Optional[Array[String]] $pre_rclone      = undef,
   Optional[Array[String]] $post_rclone     = undef,
   Optional[Stdlib::HTTPUrl] $http_proxy    = undef,
+  Boolean $slack_msg = true,
 ) {
   if $active {
     if $conf != undef {
