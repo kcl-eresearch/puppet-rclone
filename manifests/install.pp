@@ -83,7 +83,7 @@ class rclone::install {
       ensure => 'directory',
       owner  => 'root',
       group  => 'root',
-      mode   => '0754';
+      mode   => '0751';
 
     '/lib/systemd/system/alert-slack@.service':
       ensure  => 'file',
