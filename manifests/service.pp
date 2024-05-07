@@ -53,6 +53,9 @@
 # @param post_rclone
 #   any ExecStartPost that may be desired to run after rclone runs
 #
+# @param http_proxy
+#   the URL for an http_proxy to use e.g. http://squid.example.com:3128
+#
 define rclone::service (
   String                         $command,
   String                         $src,
@@ -66,6 +69,7 @@ define rclone::service (
   Optional[Hash[String, Variant[String, Sensitive[String]]]] $conf     = undef,
   Optional[Array[String]] $pre_rclone      = undef,
   Optional[Array[String]] $post_rclone     = undef,
+  Optional[Stdlib::HTTPUrl] $http_proxy    = undef,
 ) {
   if !$active {
     tidy {
