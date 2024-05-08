@@ -7,9 +7,7 @@ OnFailure=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup started' | /usr/bin/
 Type=oneshot
 User=<%= @user %>
 Group=<%= @group %>
-<% if @slack_msg != nil -%>
 ExecStartPre=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= @name %>-backup started'
-<% end -%>
 ExecStartPre=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup started' | /usr/bin/mailx -s '<%= @name %>-backup started' <%= @email %>"
 <% if @pre_rclone != nil -%>
 <% @pre_rclone.each do |pre_exec| -%>
@@ -28,6 +26,4 @@ ExecStartPost=+/bin/bash -c "/usr/bin/echo '<%= @name %>-backup completed' | /us
 ExecStartPost=<%= post_exec %>
 <% end -%>
 <% end -%>
-<% if @slack_msg != nil -%>
 ExecStartPost=+/usr/local/bin/slack_msg --channel notifications --icon robot --message '<%= @name %>-backup completed'
-<% end -%>
