@@ -53,6 +53,9 @@
 # @param post_rclone
 #   any ExecStartPost that may be desired to run after rclone runs
 #
+# @param http_proxy
+#   the URL for an http_proxy to use e.g. http://squid.example.com:3128
+#
 define rclone::service (
   String                         $command,
   String                         $src,
@@ -66,23 +69,8 @@ define rclone::service (
   Optional[Hash[String, Variant[String, Sensitive[String]]]] $conf     = undef,
   Optional[Array[String]] $pre_rclone      = undef,
   Optional[Array[String]] $post_rclone     = undef,
+  Optional[Stdlib::HTTPUrl] $http_proxy    = undef,
 ) {
-  if !$active {
-    tidy {
-      'delete-rclone-backup-systemd-files':
-        path    => '/lib/systemd/system',
-        recurse => true,
-        matches => ["${name}-backup.timer", "${name}-backup.service"],
-        rmdirs  => false;
-
-      'delete-rclone-conf-files':
-        path    => '/etc/rclone',
-        recurse => true,
-        matches => ["${name}_rclone.conf"],
-        rmdirs  => false;
-    }
-  }
-
   if $active {
     if $conf != undef {
       if $opts == undef {
@@ -95,8 +83,7 @@ define rclone::service (
         group => $group,
         conf  => $conf,
       }
-    }
-    else {
+    } else {
       if $opts == undef {
         $rclone_opts = ''
       }
@@ -104,6 +91,7 @@ define rclone::service (
         $rclone_opts = $opts
       }
     }
+
     file {
       "/lib/systemd/system/${name}-backup.timer":
         ensure  => 'file',
@@ -140,15 +128,27 @@ define rclone::service (
         create_group => $group,
         create_mode  => '0664',
     }
-  }
 
-  if $active {
     systemd::timer {
       "${name}-backup.timer":
         timer_source   => "/lib/systemd/system/${name}-backup.timer",
         service_source => "/lib/systemd/system/${name}-backup.service",
         active         => true,
         enable         => true;
+    }
+  } else {
+    tidy {
+      'delete-rclone-backup-systemd-files':
+        path    => '/lib/systemd/system',
+        recurse => true,
+        matches => ["${name}-backup.timer", "${name}-backup.service"],
+        rmdirs  => false;
+
+      'delete-rclone-conf-files':
+        path    => '/etc/rclone',
+        recurse => true,
+        matches => ["${name}_rclone.conf"],
+        rmdirs  => false;
     }
   }
 }

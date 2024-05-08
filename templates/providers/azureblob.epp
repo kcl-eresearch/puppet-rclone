@@ -1,0 +1,9 @@
+<%- | String $config_name,
+      String $account,
+      Sensitive $secret_key,
+| -%>
+# Puppet managed file - additional configs need to be added in modules>create>templates>hpc>control>rclone-backup.conf.epp
+[<%= $config_name %>]
+type = azureblob
+account = <%= $account %>
+key = <%= $secret_key %>
