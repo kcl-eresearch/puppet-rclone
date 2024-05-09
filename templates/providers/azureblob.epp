@@ -1,9 +1,17 @@
 <%- | String $config_name,
-      String $account,
-      Sensitive $secret_key,
+      Optional[String] $account,
+      Optional[Sensitive] $secret_key,
+      Optional[Sensitive] $sas_url,
 | -%>
-# Puppet managed file - additional configs need to be added in modules>create>templates>hpc>control>rclone-backup.conf.epp
+# Puppet managed file
 [<%= $config_name %>]
 type = azureblob
+<% if $account { -%>
 account = <%= $account %>
+<% } -%>
+<% if $secret_key { - %>
 key = <%= $secret_key %>
+<% } -%>
+<% if $sas_url { - %>
+sas_url = <%= $sas_url %>
+<% } -%>
