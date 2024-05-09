@@ -1,7 +1,7 @@
 <%- | String $config_name,
-      Optional[String] $account,
-      Optional[Sensitive] $secret_key,
-      Optional[Sensitive] $sas_url,
+      Optional[String] $account = undef,
+      Optional[Sensitive] $secret_key = undef,
+      Optional[Sensitive] $sas_url = undef,
 | -%>
 # Puppet managed file
 [<%= $config_name %>]
