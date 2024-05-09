@@ -9,9 +9,9 @@ type = azureblob
 <% if $account { -%>
 account = <%= $account %>
 <% } -%>
-<% if $secret_key { - %>
+<% if $secret_key { -%>
 key = <%= $secret_key %>
 <% } -%>
-<% if $sas_url { - %>
+<% if $sas_url { -%>
 sas_url = <%= $sas_url %>
 <% } -%>
