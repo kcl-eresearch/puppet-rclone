@@ -138,13 +138,13 @@ define rclone::service (
     }
   } else {
     tidy {
-      'delete-rclone-backup-systemd-files':
+      "delete-${name}-rclone-backup-systemd-files":
         path    => '/lib/systemd/system',
         recurse => true,
         matches => ["${name}-backup.timer", "${name}-backup.service"],
         rmdirs  => false;
 
-      'delete-rclone-conf-files':
+      "delete-${name}-rclone-conf-files":
         path    => '/etc/rclone',
         recurse => true,
         matches => ["${name}_rclone.conf"],
