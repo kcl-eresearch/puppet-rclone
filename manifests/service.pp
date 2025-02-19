@@ -1,4 +1,4 @@
-# @summary Configures the rclone backups and the systemd timers and services that run them
+# @summary Configures rclone and the systemd mounts, timers and services that run them
 #
 #  - tidy up all backup files if an active one is made inactive then create the ones that are needed
 #  - create a systemd service to run a named backup
@@ -57,7 +57,7 @@
 #   the URL for an http_proxy to use e.g. http://squid.example.com:3128
 #
 define rclone::service (
-  String                         $command,
+  Enum['sync', 'copy', 'mount']  $command,
   String                         $src,
   String                         $dst,
   String                         $user,
@@ -71,6 +71,13 @@ define rclone::service (
   Optional[Array[String]] $post_rclone     = undef,
   Optional[Stdlib::HTTPUrl] $http_proxy    = undef,
 ) {
+  # Mount units must be named after their mount point
+  # https://www.freedesktop.org/software/systemd/man/latest/systemd.mount.html
+  # Strip first slash and then replace subsequent slashes with hyphens
+  $mount_unit = regsubst(strip(
+        regsubst($dst, '^/', '', 'G')
+    ), '/', '-', 'G')
+
   if $active {
     if $conf != undef {
       if $opts == undef {
@@ -91,52 +98,75 @@ define rclone::service (
         $rclone_opts = $opts
       }
     }
+    if $command == ['sync', 'copy'] {
+        file {
+            "/lib/systemd/system/${name}-backup.timer":
+                ensure  => 'file',
+                owner   => 'root',
+                group   => 'root',
+                mode    => '0444',
+                content => epp("${module_name}/rclone-backup.timer.epp", {
+                   'svc_name'   => $name,
+                   'run_on_cal' => $run_on,
+                });
+            "/lib/systemd/system/${name}-backup.service":
+                ensure  => 'file',
+                owner   => 'root',
+                group   => 'root',
+                mode    => '0444',
+                content => template("${module_name}/rclone-backup.service.erb");
 
-    file {
-      "/lib/systemd/system/${name}-backup.timer":
-        ensure  => 'file',
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0444',
-        content => epp("${module_name}/rclone-backup.timer.epp", {
-            'svc_name'   => $name,
-            'run_on_cal' => $run_on,
-        });
+            "/var/log/rclone-backups/${name}-backup.log":
+                ensure => 'present',
+                owner  => $user,
+                group  => $group,
+                mode   => '0664';
+        }
+        logrotate::rule {
+            "${name}-backup-log-rotate":
+                path         => "/var/log/rclone-backups/${name}-backup.log",
+                rotate       => 6,
+                rotate_every => 'week',
+                ifempty      => false,
+                create       => true,
+                create_owner => $user,
+                create_group => $group,
+                create_mode  => '0664',
+        }
 
-      "/lib/systemd/system/${name}-backup.service":
-        ensure  => 'file',
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0444',
-        content => template("${module_name}/rclone-backup.service.erb");
+        systemd::timer {
+           "${name}-backup.timer":
+              timer_source   => "/lib/systemd/system/${name}-backup.timer",
+              service_source => "/lib/systemd/system/${name}-backup.service",
+              active         => true,
+              enable         => true;
+        }
+    } if $command == 'mount' {
+        # First remove -- prefixes, strip trailing spaces and then replace spaces with commas
+        $mount_opts = regsubst(strip(
+                regsubst($rclone_opts, '--', '', 'G')
+            ), '\s+', ',', 'G')
 
-      "/var/log/rclone-backups/${name}-backup.log":
-        ensure => 'present',
-        owner  => $user,
-        group  => $group,
-        mode   => '0664';
-    }
-
-    logrotate::rule {
-      "${name}-backup-log-rotate":
-        path         => "/var/log/rclone-backups/${name}-backup.log",
-        rotate       => 6,
-        rotate_every => 'week',
-        ifempty      => false,
-        create       => true,
-        create_owner => $user,
-        create_group => $group,
-        create_mode  => '0664',
-    }
-
-    systemd::timer {
-      "${name}-backup.timer":
-        timer_source   => "/lib/systemd/system/${name}-backup.timer",
-        service_source => "/lib/systemd/system/${name}-backup.service",
-        active         => true,
-        enable         => true;
+        systemd::manage_unit {
+            "${mount_unit}.mount":
+                ensure      => present,
+                unit_entry  => {
+                   'Description' => "${name} rclone mount unit ${src}:${dst}"
+                },
+                mount_entry => {
+                    'Type'    => 'rclone',
+                    'What'    => $src,
+                    'Where'   => $dst,
+                    'Options' => $mount_opts,
+                }
+        }
     }
   } else {
+    systemd::manage_unit {
+      "${mount_unit}.mount":
+        ensure      => absent,
+    };
+
     tidy {
       "delete-${name}-rclone-backup-systemd-files":
         path    => '/lib/systemd/system',

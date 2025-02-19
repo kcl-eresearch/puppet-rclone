@@ -1,0 +1,22 @@
+<%- | String $config_name,
+      String $remote,
+      Bool   $directory_name_encryption,
+      Enum['off', 'standard', 'obfuscate' ] $filename_encryption.
+      Sensitive $password,
+      Sensitive $salt,
+      Hash[String, Variant[String, Sensitive[String]]] $provider,
+| -%>
+
+# Puppet managed file
+[<%= $config_name %>_provider]
+<% $provider.keys.sort.each |$key| { -%>
+    <%= $key %> = <%= $provider[$key] %>
+<% } -%>
+
+[<%= $config_name %>]
+type = crypt
+remote = <%= $remote %>
+filename_encryption = <%= $filename_encryption %>
+directory_name_encryption = <%= $directory_name_encryption %>
+password = <%= $password %>
+password2 = <%= $salt %>

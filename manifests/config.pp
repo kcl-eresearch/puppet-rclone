@@ -13,11 +13,37 @@
 #   for AzureBlob:
 #      account
 #      secret_key
+#   for SMB
+#      host
+#      domain
+#      user
+#      pass
+
 define rclone::config (
   String               $group,
   Hash[String, Variant[String, Sensitive[String]]] $conf,
 ) {
   case $conf['rclone_conf'] {
+    'crypt': {
+        $config = {
+          'config_name'                => $name,
+          'remote'                     => $conf['remote'],
+          'directory_name_encryption'  => $conf['directory_name_encryption'],
+          'filename_encryption'        => $conf['filename_encryption'],
+          'password'                   => $conf['password'],
+          'salt'                       => $conf['salt'],
+          # Upstream provider config you're encrypting such as smb or S3 AWS
+          'provider'                   => $conf['provider'],
+        }
+    }
+    'SMB': {
+      $config = {
+          'host'   => $conf['host'],
+          'domain' => $conf['domain'],
+          'user'   => $conf['user'],
+          'pass'   => $conf['pass']
+      }
+    }
     'S3_AWS': {
       $config = {
         'config_name'  => $name,
