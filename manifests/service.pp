@@ -60,11 +60,11 @@ define rclone::service (
   Enum['sync', 'copy', 'mount']  $command,
   String                         $src,
   String                         $dst,
-  String                         $user,
-  String                         $group,
-  String                         $run_on,
-  String                         $email,
+  String                         $user     = 'root',
+  String                         $group    = 'root',
   Boolean                        $active   = true,
+  String                         $run_on   = 'Mon *-*-* 00:00:00',
+  Optional[String]               $email    = undef,
   Optional[String]               $opts     = undef,
   Optional[Hash[String, Variant[String, Sensitive[String]]]] $conf     = undef,
   Optional[Array[String]] $pre_rclone      = undef,
@@ -99,6 +99,10 @@ define rclone::service (
       }
     }
     if $command == ['sync', 'copy'] {
+        if $email == undef {
+            fail('email cannot be blank for sync or copy command')
+        }
+
         file {
             "/lib/systemd/system/${name}-backup.timer":
                 ensure  => 'file',
