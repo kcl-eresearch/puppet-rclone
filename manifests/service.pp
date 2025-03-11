@@ -71,12 +71,6 @@ define rclone::service (
   Optional[Array[String]] $post_rclone     = undef,
   Optional[Stdlib::HTTPUrl] $http_proxy    = undef,
 ) {
-  # Mount units must be named after their mount point
-  # https://www.freedesktop.org/software/systemd/man/latest/systemd.mount.html
-  # Strip first slash and then replace subsequent slashes with hyphens
-  $mount_unit = regsubst(strip(
-        regsubst($dst, '^/', '', 'G')
-    ), '/', '-', 'G')
 
   if $active {
     if $conf != undef {
@@ -151,23 +145,16 @@ define rclone::service (
                 regsubst($rclone_opts, '--', '', 'G')
             ), '\s+', ',', 'G')
 
-        systemd::manage_unit {
-            "${mount_unit}.mount":
-                ensure      => present,
-                unit_entry  => {
-                   'Description' => "${name} rclone mount unit ${src}:${dst}"
-                },
-                mount_entry => {
-                    'Type'    => 'rclone',
-                    'What'    => $src,
-                    'Where'   => $dst,
-                    'Options' => $mount_opts,
-                }
-        }
-    }
-  } else {
-    systemd::manage_unit {
-      "${mount_unit}.mount":
+        mount { $dst:
+                    ensure  => present,
+                    options => $mount_opts,
+                    fstype  => 'rclone',
+                    device  => $src,
+            }
+            }
+        } else {
+    mount {
+      $dst:
         ensure      => absent,
     };
 
