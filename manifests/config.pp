@@ -10,9 +10,9 @@
 #      secret_key
 #      aws_region 
 #      aws_location
-#   for AzureBlob:
-#      account
-#      secret_key
+#   for AzureBlob, one of:
+#      account and secret_key
+#      sas_url
 define rclone::config (
   String               $group,
   Hash[String, Variant[String, Sensitive[String]]] $conf,
@@ -29,10 +29,17 @@ define rclone::config (
     }
 
     'azureblob': {
-      $config = {
-        'config_name' => $name,
-        'account'     => $conf['account'],
-        'secret_key'  => $conf['secret_key'],
+      if 'sas_url' in $conf {
+        $config = {
+          'config_name' => $name,
+          'sas_url'     => $conf['sas_url'],
+        }
+      } else {
+        $config = {
+          'config_name' => $name,
+          'account'     => $conf['account'],
+          'secret_key'  => $conf['secret_key'],
+        }
       }
     }
 
