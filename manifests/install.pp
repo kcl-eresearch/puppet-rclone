@@ -68,6 +68,25 @@ class rclone::install {
       subscribe => Archive['download rclone'],
     }
 
+    # Create symlink pointing to rclone binary for use with mount
+    file { '/sbin/mount.rclone':
+      ensure          => 'link',
+      target          => $_instance_binary,
+      require         => File[$_instance_binary],
+      owner           => 'root',
+      group           => 'root',
+      mode            => '0755',
+    }
+
+    file { '/usr/bin/rclonefs':
+      ensure          => 'link',
+      target          => $_instance_binary,
+      require         => File[$_instance_binary],
+      owner           => 'root',
+      group           => 'root',
+      mode            => '0755',
+    }
+
     file { $rclone::man_page:
       ensure    => link,
       target    => $_instance_man_page,
